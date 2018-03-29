@@ -1,0 +1,110 @@
+Second Mini Program Spec
+
+Homework2 UDP Reliable File Transfer
+
++ Overview +
+
+In this homework, you need to implement a UDP reliable file transfer protocol
+on application-level with 3 different timeout mechanism.
+
+
++ Specification +
+
+The UDP reliable file transfer protocol includes a sender and a receiver.
+Sender keeps sending the content of a file to the receiver.
+Receiver keeps receiving the packets from sender and output to another file.
+To cope with the packet loss and re-ordering in the network, sender and receiver 
+should detect the packet loss event and re-ordering event (by using the timeout method) 
+and deal with it (re-transmit the packet).
+
+You should hand-in 3 kinds of senders and 3 kinds of receivers using 3 different timeout methods respectively.
+Also, you need to hand-in your Makefile to compile these codes.
+We will not let you Demo if any of the above is not turned in.
+
+** Notes
+1. You should use C/C++ to do the homework.
+2. The usage of the executable files should be like below.
+   ./sender <receiver IP> <receiver port> <file name>
+   ./receiver <port>
+3. The receiver should NOT read the specific file locally.
+4. The file name of the received file should be as same as the original one.
+5. The receiver should keep receiving files until a Ctrl-C is entered.
+   It should not be terminated or crash after a file is transferred. 
+6. You may assume that there will be only one file transferred to a receiver at a time.
+7. Makefile should have "make" function to compile all files and "make clean" function to remove all compiled files.
+8. The executable files should be named sender1, receiver1, sender2, receiver2 ... etc.
+
+
++ Environment +
+
+To test your programs, you need to simulate the network scenario (packet loss rate and packet re-ordering),
+and check if the file received is no different from the input after the file transfer.
+
+Note: You should NOT run your programs on the workstation (i.e. npbsd, nplinux, bsd, and linux).
+         Instead, you do that on your own PC.
+
+** Simulate Network Scenario **
+
+Use tool 'tc' to simulate packet loss.
+'tc' is a program to control the traffic in kernel.
+With this tool, you can set network parameters on a NIC.
+
+-- Add a rule which setting the packet loss rate and packet re-ording.
+   Usage: sudo tc qdisc add dev <Device> root netem loss <Packet Loss Rate> delay <Delay time> <Variation> distribution normal
+
+   For example, you can add a rule to set the packet loss rate with '5%', delay time with 7ms~13ms on the device 'lo'.
+   > sudo tc qdisc add dev lo root netem loss 5% delay 10ms 3ms distribution normal
+
+-- Delete all rules on a device
+   Usage: sudo tc qdisc del dev <Device> root
+   
+   For example, you can delete all rules setting on the device 'lo'.
+   > sudo tc qdisc del dev lo root
+
+Note: If there is an error such that "RTNETLINK answers: File exists" when you
+        add a rule, try to delete all rules first.
+
+** Test file **
+
+You can use 'dd' command to generate a random file with a specified size.
+    > dd if=/dev/urandom of=<Output File Name> bs=<File Size> count=1
+	
+For example, the following command generates a file named "a_big_file" with file size=5MB
+    > dd if=/dev/urandom of=a_big_file bs=5MB count=1
+		
+
+** Check Correctness **
+
+Use tool 'diff' to check if the file transfer is correct.
+Usage: diff <File 1> <File 2>
+
+For example, you can check if the file 'a_file' is equal to 'b_file'.
+> diff a_file b_file
+
+If there is no message outputing on the screen, then a_file is equal to b_file, or 
+it shows the difference between a_file and b_file.
+
+
++ Due Date +
+
+2017/12/7 23:59
+
+Please zip your source code and upload it to e3.
+You must zip your code, or we won¡¦t accept your homework file.
+Do not use rar, 7z or others to compress your code.
+
+Hand-in format: <Student ID>.zip
+
+Note: You should have only one zipped file on E3. Be sure it's the latest version of your files.
+
++ Notice +
+
+** Makefile
+From this homework, you must use Makefile to compile your codes.
+And you need to upload your Makefile with your codes.
+If you don't use Makefile, we will not let you demo your homework.
+You need to learn how to use Makefile by yourself. The sample of Makefile will be put in the slide.
+
+** If there is difference between the slide and the Spec, you should follow the Spec.
+
+
